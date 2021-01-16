@@ -11,11 +11,15 @@ class Tailwindcss::PurgerTest < ActiveSupport::TestCase
       Tailwindcss::Purger.extract_class_names_from(Pathname.new(__dir__).join("fixtures/simple.html.erb"))
   end
 
+  test "extract class names from HAML files" do
+    assert_equal %w[ div class max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2 ].sort,
+      Tailwindcss::Purger.extract_class_names_from(Pathname.new(__dir__).join("fixtures/simple.html.haml"))
+  end
   test "basic purge" do
     purged = purged_tailwind_from_fixtures
-  
+
     assert purged !~ /.mt-6 \{/
-  
+
     assert purged =~ /.mt-5 \{/
     assert purged =~ /.sm\\:px-6 \{/
     assert purged =~ /.translate-x-1\\\/2 \{/
@@ -31,7 +35,7 @@ class Tailwindcss::PurgerTest < ActiveSupport::TestCase
 
   test "purge shouldn't remove placeholder selectors" do
     purged = Tailwindcss::Purger.purge \
-      Pathname.new(__FILE__).join("../../app/assets/stylesheets/tailwind.css").read, 
+      Pathname.new(__FILE__).join("../../app/assets/stylesheets/tailwind.css").read,
       keeping_class_names_from_files: Pathname(__dir__).join("fixtures/placeholders.html.erb")
 
     assert purged =~ /.placeholder-transparent\:\:-moz-placeholder \{/
@@ -42,7 +46,7 @@ class Tailwindcss::PurgerTest < ActiveSupport::TestCase
   private
     def purged_tailwind_from_fixtures
       Tailwindcss::Purger.purge \
-        Pathname.new(__FILE__).join("../../app/assets/stylesheets/tailwind.css").read, 
+        Pathname.new(__FILE__).join("../../app/assets/stylesheets/tailwind.css").read,
         keeping_class_names_from_files: Pathname(__dir__).glob("fixtures/*.html.erb")
     end
 end
