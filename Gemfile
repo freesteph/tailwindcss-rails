@@ -4,3 +4,5 @@ gemspec
 
 gem "sqlite3"
 gem "byebug"
+gem "guard-minitest"
+gem "guard"
