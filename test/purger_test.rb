@@ -3,7 +3,7 @@ require "test_helper"
 class Tailwindcss::PurgerTest < ActiveSupport::TestCase
   test "extract class names from string" do
     assert_equal %w[ div class max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2 ].sort,
-      Tailwindcss::Purger.extract_class_names(%(<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2">))
+      Tailwindcss::Purger.extract_class_names(%(<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2">), "erb")
   end
 
   test "extract class names from files" do
@@ -12,7 +12,7 @@ class Tailwindcss::PurgerTest < ActiveSupport::TestCase
   end
 
   test "extract class names from HAML files" do
-    assert_equal %w[ div class max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2 ].sort,
+    assert_equal %w[ max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 translate-x-1/2 ].sort,
       Tailwindcss::Purger.extract_class_names_from(Pathname.new(__dir__).join("fixtures/simple.html.haml"))
   end
   test "basic purge" do

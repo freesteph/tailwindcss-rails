@@ -1,5 +1,6 @@
 class Tailwindcss::Purger
   CLASS_NAME_PATTERN       = /([:A-Za-z0-9_-]+[\.]*[\\\/:A-Za-z0-9_-]*)/
+  HAML_CLASS_NAME_PATTERN  = /\.([A-Za-z-\d:\/]+)/
   OPENING_SELECTOR_PATTERN = /\..*\{/
   CLOSING_SELECTOR_PATTERN = /\s*\}/
   NEWLINE = "\n"
@@ -11,12 +12,14 @@ class Tailwindcss::Purger
       new(extract_class_names_from(keeping_class_names_from_files)).purge(input)
     end
 
-    def extract_class_names(string)
-      string.scan(CLASS_NAME_PATTERN).flatten.uniq.sort
+    def extract_class_names(string, ext)
+      is_haml = ext.end_with? 'haml'
+
+      string.scan(is_haml ? HAML_CLASS_NAME_PATTERN : CLASS_NAME_PATTERN).flatten.uniq.sort
     end
 
     def extract_class_names_from(files)
-      Array(files).flat_map { |file| extract_class_names(file.read) }.uniq.sort
+      Array(files).flat_map { |file| extract_class_names(file.read, File.extname(file)) }.uniq.sort
     end
   end
 
